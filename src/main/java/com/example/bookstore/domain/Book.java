@@ -1,24 +1,32 @@
-package com.example.bookstore;
+package com.example.bookstore.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
+@Entity
 public class Book {
 
-    // Attributes (fields)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
     private String title;
     private String author;
     private int publicationYear;
     private String isbn;
     private double price;
 
-    // Constructor
-    public Book(String title, String author, int publicationYear, String isbn, double price) {
-        this.title = title;
-        this.author = author;
-        this.publicationYear = publicationYear;
-        this.isbn = isbn;
-        this.price = price;
+    // Getters and setters
+    public Long getId() {
+        return id;
     }
 
-    // Getters and Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -59,15 +67,5 @@ public class Book {
         this.price = price;
     }
 
-    // Optional: Override toString() method for easy printing of Book details
-    @Override
-    public String toString() {
-        return "Book{" +
-                "title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", publicationYear=" + publicationYear +
-                ", isbn='" + isbn + '\'' +
-                ", price=" + price +
-                '}';
-    }
+
 }
