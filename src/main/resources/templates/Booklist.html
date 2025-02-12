@@ -12,8 +12,6 @@
         <thead>
             <tr>
                 <th>Author</th>
-                <th></th>
-                <th></th>
                 <th>Title</th>
                 <th>ISBN</th>
                 <th>Year</th>
@@ -22,11 +20,11 @@
         <tbody>
             <!-- Loop through the books and display each one -->
             <th:block th:each="book : ${books}">
-                <tr>
+                
                     <td th:text="${book.author}"></td>
                     <td th:text="${book.title}"></td>
                     <td th:text="${book.isbn}"></td>
-                    <td th:text="${book.year}"></td>
+                    <td th:text="${book.publicationYear}"></td>
                 </tr>
             </th:block>
         </tbody>
