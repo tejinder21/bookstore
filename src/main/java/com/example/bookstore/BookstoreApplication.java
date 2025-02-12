@@ -18,13 +18,11 @@ public class BookstoreApplication {
 	@Bean
 	public CommandLineRunner demo(BookRepository repository) {
 		return (args) -> {
-			Book s1 = new Book("\"1984\", \"George Orwell\", 1949, \"9780451524935\", 9.99", null, 0, null, 0);
-			Book s2 = new Book("To Kill a Mockingbird", "Harper Lee", 1960, "9780061120084", 7.99);
-			Book s3 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 1925, "9780743273565", 10.99);
+			Book s1 = new Book("A Farewell to Arms", "Ernest Hemingway", 1929, "1232323-21", 9.99);
+			Book s2 = new Book("Animal Farm", "George Orwell", 1945, "2212343-5", 7.99);
 
 			repository.save(s1);
 			repository.save(s2);
-			repository.save(s3);
 
 			System.out.println("Demo books have been added to the database.");
 
