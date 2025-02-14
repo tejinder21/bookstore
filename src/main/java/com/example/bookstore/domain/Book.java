@@ -1,9 +1,9 @@
 package com.example.bookstore.domain;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Book {
@@ -16,19 +16,17 @@ public class Book {
     private String author;
     private int publicationYear;
     private String isbn;
-    private double price;
 
     // No-argument constructor (required by JPA)
     public Book() {
     }
 
     // Parameterized constructor
-    public Book(String title, String author, int publicationYear, String isbn, double price) {
+    public Book(String title, String author, int publicationYear, String isbn) {
         this.title = title;
         this.author = author;
         this.publicationYear = publicationYear;
         this.isbn = isbn;
-        this.price = price;
     }
 
     // Getters and setters
@@ -70,13 +68,5 @@ public class Book {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 }
