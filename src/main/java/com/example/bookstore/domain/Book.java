@@ -17,11 +17,11 @@ public class Book {
     private int publicationYear;
     private String isbn;
 
-    // No-argument constructor (required by JPA)
+   
     public Book() {
     }
 
-    // Parameterized constructor
+
     public Book(String title, String author, int publicationYear, String isbn) {
         this.title = title;
         this.author = author;
