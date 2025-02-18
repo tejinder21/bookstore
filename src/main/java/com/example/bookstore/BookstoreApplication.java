@@ -7,26 +7,37 @@ import org.springframework.context.annotation.Bean;
 
 import com.example.bookstore.domain.Book;
 import com.example.bookstore.domain.BookRepository;
+import com.example.bookstore.domain.Category;
+import com.example.bookstore.domain.CategoryRepository;
 
 @SpringBootApplication
 public class BookstoreApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BookstoreApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BookstoreApplication.class, args);
+    }
 
-	@Bean
-	public CommandLineRunner demo(BookRepository repository) {
-		return (args) -> {
-			Book s1 = new Book("A Farewell to Arms", "Ernest Hemingway", 1929, "1232323-21");
-			Book s2 = new Book("Animal Farm", "George Orwell", 1945, "2212343-5");
+    @Bean
+    public CommandLineRunner demo(BookRepository bookRepository, CategoryRepository categoryRepository) {
+        return (args) -> {
+            
+            Category cat1 = new Category("Sci-Fi");
+            Category cat2 = new Category("Fantasy");
 
-			repository.save(s1);
-			repository.save(s2);
+            categoryRepository.save(cat1);
+            categoryRepository.save(cat2);
 
-			System.out.println("Demo books have been added to the database.");
+           
+            Book s1 = new Book("A Farewell to Arms", "Ernest Hemingway", 1929, "1232323-21", cat1);
+            Book s2 = new Book("Animal Farm", "George Orwell", 1945, "2212343-5", cat2);
 
-		};
-	}
+            bookRepository.save(s1);
+            bookRepository.save(s2);
 
+           
+            System.out.println("Categories and books have been added to the database.");
+            System.out.println("Book 1: " + s1);
+            System.out.println("Book 2: " + s2);
+        };
+    }
 }

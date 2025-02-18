@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Book {
@@ -11,22 +12,24 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     private String title;
     private String author;
     private int publicationYear;
     private String isbn;
 
-   
+    @ManyToOne
+    private Category category;
+
     public Book() {
     }
 
-
-    public Book(String title, String author, int publicationYear, String isbn) {
+    public Book(String title, String author, int publicationYear, String isbn, Category category) {
         this.title = title;
         this.author = author;
         this.publicationYear = publicationYear;
         this.isbn = isbn;
+        this.category = category;
     }
 
     // Getters and setters
@@ -69,4 +72,12 @@ public class Book {
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
+
+    @Override
+    public String toString() {
+        return "Book [id=" + id + ", title=" + title + ", author=" + author +
+                ", year=" + publicationYear + ", isbn=" + isbn + ", category="
+                + (category != null ? category.getName() : "None") + "]";
+    }
+
 }
