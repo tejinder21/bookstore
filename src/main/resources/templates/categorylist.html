@@ -2,24 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Category List</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
 </head>
 <body>
-    <h2>Category List</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="category : ${categories}">
-                <td th:text="${category.id}"></td>
-                <td th:text="${category.name}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <br>
-    <a href="/addcategory">Add New Category</a>
+    <div class="container mt-5">
+        <h2>Category List</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="category : ${categories}">
+                    <td th:text="${category.id}"></td>
+                    <td th:text="${category.name}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <a href="/addcategory" class="btn btn-success">Add New Category</a>
+    </div>
 </body>
 </html>
