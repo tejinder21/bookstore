@@ -1,5 +1,7 @@
 package com.example.bookstore.domain;
 
+
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,7 @@ public class Book {
     
     @ManyToOne
     @JoinColumn(name = "category_id")  
+   // @JsonIgnore
     private Category category;
 
     
