@@ -1,14 +1,11 @@
 package com.example.bookstore.domain;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.List;
 
 @Entity
 public class Category {
@@ -19,7 +16,6 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category")
-    @JsonIgnore
     private List<Book> books;
 
     public Category() {}
@@ -28,8 +24,7 @@ public class Category {
         this.name = name;
     }
 
-    // Getterit ja setterit
-
+    
     public Long getId() {
         return id;
     }
@@ -52,10 +47,5 @@ public class Category {
 
     public void setBooks(List<Book> books) {
         this.books = books;
-    }
-
-    @Override
-    public String toString() {
-        return "Category [id=" + id + ", name=" + name + "]";
     }
 }

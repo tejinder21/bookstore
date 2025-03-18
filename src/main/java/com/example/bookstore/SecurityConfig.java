@@ -2,59 +2,60 @@ package com.example.bookstore;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import com.example.bookstore.web.UserServiceImpl;
 
 @Configuration
 public class SecurityConfig {
 
-    @SuppressWarnings({ "removal", "deprecation" })
+    @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests(requests -> requests
-                        .requestMatchers("/", "/home", "/login", "/css/**").permitAll() 
-                        .requestMatchers("/delete/**").hasRole("ADMIN") // Only allow Admin to delete
-                        .anyRequest().authenticated())
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/Booklist", true)
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/booklist")
-                        .permitAll())
-                .csrf(csrf -> csrf.disable()); 
+            
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/booklist", "/add", "/save", "/edit/**").authenticated()
+                .requestMatchers("/delete/**").hasAuthority("ROLE_ADMIN") // Restrict DELETE to ADMIN
+                .requestMatchers("/h2-console/**").permitAll() // Sallii pääsyn H2-konsoleen
+                .anyRequest().permitAll()
+            )
+            .formLogin(login -> login
+                .defaultSuccessUrl("/booklist", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            );
+
+        // Estää "frame-options" -virheen H2-konsolelle
+        http.headers(headers -> headers.frameOptions().sameOrigin());
 
         return http.build();
     }
 
     @Bean
-     public UserDetailsService userDetailsService() {
-        PasswordEncoder passwordEncoder = passwordEncoder();
-        
-        UserDetails user = User.builder()
-            .username("user")
-            .password(passwordEncoder.encode("password")) 
-            .roles("USER")
-            .build();
-        
-        UserDetails admin = User.builder()
-            .username("admin")
-            .password(passwordEncoder.encode("admin")) 
-            .roles("ADMIN", "USER")
-            .build();
-        
-        return new InMemoryUserDetailsManager(user, admin);
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); 
+    public UserDetailsService userDetailsService() {
+        return new UserServiceImpl();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
 }

@@ -4,15 +4,11 @@ import com.example.bookstore.domain.Book;
 import com.example.bookstore.domain.BookRepository;
 import com.example.bookstore.domain.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class BookController {
@@ -23,50 +19,73 @@ public class BookController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // Book list page with authenticated user's name
-    @RequestMapping("/Booklist")
-    public String bookList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        model.addAttribute("books", repository.findAll()); // Get all books
-        model.addAttribute("username", userDetails.getUsername()); // Display the logged-in user's username
-        return "Booklist";  // Ensure the correct view template is returned
+    // Kirjalista
+    
+    @RequestMapping("/booklist")
+    public String bookList(Model model) {
+        String username = getCurrentUserName(); // Get the username dynamically
+        model.addAttribute("username", username); // Add the username to the model
+        model.addAttribute("books", repository.findAll()); // Existing logic
+        return "booklist"; 
     }
 
-    // Page to add a new book
+    // Lisää kirja
     @RequestMapping("/add")
     public String addBook(Model model) {
-        model.addAttribute("book", new Book()); // Empty book
-        model.addAttribute("categories", categoryRepository.findAll()); // All categories
-        return "addbook";  // Ensure addbook.html exists
+        model.addAttribute("book", new Book());
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "addbook";
     }
 
-    // Save the new book
+    // Tallenna kirja
     @PostMapping("/save")
     public String saveBook(@ModelAttribute Book book) {
-        repository.save(book); // Save book
-        return "redirect:/Booklist";  // Redirect to Booklist after saving
+        repository.save(book);
+        return "redirect:/booklist";
     }
 
-    // Delete book (restricted to admin users)
+    // Poista kirja
     @RequestMapping("/delete/{id}")
-    public String deleteBook(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails) {
-        // Check if the user has the "ROLE_ADMIN" role before allowing deletion
-        if (userDetails.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
-            repository.deleteById(id); // Delete book by ID
-        }
-        return "redirect:/Booklist";  // Redirect to Booklist after deletion
+    public String deleteBook(@PathVariable("id") Long id) {
+        repository.deleteById(id);
+        return "redirect:/booklist";
     }
 
-    // Edit an existing book
+    // Muokkaa kirja
     @RequestMapping("/edit/{id}")
     public String editBook(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("book", repository.findById(id).orElse(null)); // Find and edit book
-        model.addAttribute("categories", categoryRepository.findAll()); // Add categories
-        return "editbook";  // Ensure editbook.html exists
+        return repository.findById(id)
+                .map(book -> {
+                    model.addAttribute("book", book);
+                    model.addAttribute("categories", categoryRepository.findAll());
+                    return "editbook";
+                })
+                .orElse("redirect:/booklist");
     }
 
-    // Login page - Spring Security will use this by default
-    @GetMapping("/login")
-    public String login() {
-        return "login"; // This returns the login.html view
+    // Kirjautumisreitti (login)
+    @RequestMapping("/login")
+    public String loginPage() {
+        return "login"; // Palautetaan login.html
+    }
+
+    // Kirjautumisen jälkeen tervehdys käyttäjälle
+    @RequestMapping("/welcome")
+    public String welcomeUser(Model model) {
+        String username = getCurrentUserName();
+        model.addAttribute("username", username);
+        return "welcome"; // Tervetuloa-sivu, jossa näkyy käyttäjänimi
+    }
+
+    // Saadaan nykyinen käyttäjänimi
+    private String getCurrentUserName() {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getUsername();
+    }
+
+    // Uloskirjautuminen
+    @RequestMapping("/logout")
+    public String logout() {
+        return "redirect:/login?logout"; // Kirjautumisen jälkeen palautetaan login-sivulle
     }
 }
