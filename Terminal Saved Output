@@ -1,0 +1,48 @@
+Last login: Wed Mar 19 23:20:45 on ttys064
+tajinderkumar@Tajinders-Air ~ % cd ~/Desktop/backend/bookstore
+
+tajinderkumar@Tajinders-Air bookstore % ls -a
+
+.			.gitmodules		mvnw
+..			.gitmodules.save	mvnw.cmd
+.DS_Store		.mvn			pom.xml
+.git			.vscode			src
+.gitattributes		HELP.md			target
+.gitignore		bookstore-test
+tajinderkumar@Tajinders-Air bookstore % nano .gitmodules
+
+
+
+
+
+
+
+
+
+
+
+
+  GNU nano 2.0.6             File: .gitmodules                        Modified  
+
+[submodule "bookstore-test"]
+    path = bookstore-test
+    url = https://github.com/tejinder21/bookstore-test.git
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+^G Get Help  ^O WriteOut  ^R Read File ^Y Prev Page ^K Cut Text  ^C Cur Pos
+^X Exit      ^J Justify   ^W Where Is  ^V Next Page ^U UnCut Text^T To Spell
