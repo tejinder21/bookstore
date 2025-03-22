@@ -18,12 +18,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            
             .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/booklist", "/add", "/save", "/edit/**").authenticated()
-                .requestMatchers("/delete/**").hasAuthority("ROLE_ADMIN") // Restrict DELETE to ADMIN
-                .requestMatchers("/h2-console/**").permitAll() // Sallii pääsyn H2-konsoleen
+                .requestMatchers("/delete/**").hasRole("ADMIN") // Use 'hasRole' for role checking
+                .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().permitAll()
             )
             .formLogin(login -> login
@@ -35,7 +34,7 @@ public class SecurityConfig {
                 .permitAll()
             );
 
-        // Estää "frame-options" -virheen H2-konsolelle
+        // Allows H2 console to be accessed in the same origin
         http.headers(headers -> headers.frameOptions().sameOrigin());
 
         return http.build();
