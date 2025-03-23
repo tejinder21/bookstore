@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Use IDENTITY strategy
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String title;
